@@ -16,8 +16,8 @@ namespace WebAPIRestaurant
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                routeTemplate: "api/{controller}/{id}/{opt}",
+                defaults: new { id = RouteParameter.Optional, opt = RouteParameter.Optional }
             );
         }
     }

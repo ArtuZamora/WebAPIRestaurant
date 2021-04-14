@@ -12,6 +12,8 @@ namespace WebAPIRestaurant.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class RestaurantContext : DbContext
     {
@@ -31,5 +33,133 @@ namespace WebAPIRestaurant.Models
         public virtual DbSet<Dish_Tag> Dish_Tag { get; set; }
         public virtual DbSet<Ingredient> Ingredients { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<vw_dishes_tags> vw_dishes_tags { get; set; }
+        public virtual DbSet<vw_tot_ingrt_per_dish> vw_tot_ingrt_per_dish { get; set; }
+    
+        public virtual ObjectResult<sp_cat_dishes_Result> sp_cat_dishes(Nullable<int> catID)
+        {
+            var catIDParameter = catID.HasValue ?
+                new ObjectParameter("CatID", catID) :
+                new ObjectParameter("CatID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_cat_dishes_Result>("sp_cat_dishes", catIDParameter);
+        }
+    
+        public virtual ObjectResult<sp_dish_by_ingredient_Result> sp_dish_by_ingredient(Nullable<int> ingtID)
+        {
+            var ingtIDParameter = ingtID.HasValue ?
+                new ObjectParameter("IngtID", ingtID) :
+                new ObjectParameter("IngtID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_dish_by_ingredient_Result>("sp_dish_by_ingredient", ingtIDParameter);
+        }
+    
+        public virtual ObjectResult<sp_categories_Result> sp_categories(Nullable<int> catID)
+        {
+            var catIDParameter = catID.HasValue ?
+                new ObjectParameter("CatID", catID) :
+                new ObjectParameter("CatID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_categories_Result>("sp_categories", catIDParameter);
+        }
+    
+        public virtual ObjectResult<sp_dish_detail_Result> sp_dish_detail(Nullable<int> dishID)
+        {
+            var dishIDParameter = dishID.HasValue ?
+                new ObjectParameter("DishID", dishID) :
+                new ObjectParameter("DishID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_dish_detail_Result>("sp_dish_detail", dishIDParameter);
+        }
+    
+        public virtual ObjectResult<string> sp_dish_ingredients(Nullable<int> dishID)
+        {
+            var dishIDParameter = dishID.HasValue ?
+                new ObjectParameter("DishID", dishID) :
+                new ObjectParameter("DishID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("sp_dish_ingredients", dishIDParameter);
+        }
+    
+        public virtual ObjectResult<sp_dishes_tags_Result> sp_dishes_tags(Nullable<int> dishID)
+        {
+            var dishIDParameter = dishID.HasValue ?
+                new ObjectParameter("DishID", dishID) :
+                new ObjectParameter("DishID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_dishes_tags_Result>("sp_dishes_tags", dishIDParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> sp_tot_dishes_by_ingt(Nullable<int> ingtID)
+        {
+            var ingtIDParameter = ingtID.HasValue ?
+                new ObjectParameter("IngtID", ingtID) :
+                new ObjectParameter("IngtID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("sp_tot_dishes_by_ingt", ingtIDParameter);
+        }
+    
+        public virtual ObjectResult<Nullable<int>> sp_tot_dishes_per_cat(Nullable<int> catID)
+        {
+            var catIDParameter = catID.HasValue ?
+                new ObjectParameter("CatID", catID) :
+                new ObjectParameter("CatID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Nullable<int>>("sp_tot_dishes_per_cat", catIDParameter);
+        }
+    
+        public virtual ObjectResult<Dish> DishDetail(Nullable<int> dishID)
+        {
+            var dishIDParameter = dishID.HasValue ?
+                new ObjectParameter("DishID", dishID) :
+                new ObjectParameter("DishID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Dish>("DishDetail", dishIDParameter);
+        }
+    
+        public virtual ObjectResult<Dish> DishDetail(Nullable<int> dishID, MergeOption mergeOption)
+        {
+            var dishIDParameter = dishID.HasValue ?
+                new ObjectParameter("DishID", dishID) :
+                new ObjectParameter("DishID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Dish>("DishDetail", mergeOption, dishIDParameter);
+        }
+    
+        public virtual ObjectResult<Category> DishCategory(Nullable<int> catID)
+        {
+            var catIDParameter = catID.HasValue ?
+                new ObjectParameter("CatID", catID) :
+                new ObjectParameter("CatID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Category>("DishCategory", catIDParameter);
+        }
+    
+        public virtual ObjectResult<Category> DishCategory(Nullable<int> catID, MergeOption mergeOption)
+        {
+            var catIDParameter = catID.HasValue ?
+                new ObjectParameter("CatID", catID) :
+                new ObjectParameter("CatID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<Category>("DishCategory", mergeOption, catIDParameter);
+        }
+    
+        public virtual ObjectResult<string> DishIngredients(Nullable<int> dishID)
+        {
+            var dishIDParameter = dishID.HasValue ?
+                new ObjectParameter("DishID", dishID) :
+                new ObjectParameter("DishID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("DishIngredients", dishIDParameter);
+        }
+    
+        public virtual ObjectResult<string> DishTags(Nullable<int> dishID)
+        {
+            var dishIDParameter = dishID.HasValue ?
+                new ObjectParameter("DishID", dishID) :
+                new ObjectParameter("DishID", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<string>("DishTags", dishIDParameter);
+        }
     }
 }

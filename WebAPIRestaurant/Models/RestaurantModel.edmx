@@ -55,8 +55,28 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TagName" Type="char" MaxLength="20" Nullable="false" />
         </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Restaurant.dbo.vw_dishes_tags' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vw_dishes_tags">
+          <Key>
+            <PropertyRef Name="Dish" />
+          </Key>
+          <Property Name="Dish" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Tags" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Restaurant.dbo.vw_tot_ingrt_per_dish' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vw_tot_ingrt_per_dish">
+          <Key>
+            <PropertyRef Name="Dish" />
+          </Key>
+          <Property Name="Dish" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Ingredients Quantity" Type="int" />
+        </EntityType>
         <Association Name="FK_Dish_Cateogry">
-          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="Category" Type="Self.Category" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Dish" Type="Self.Dish" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Category">
@@ -68,7 +88,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Dish_Ingr_D">
-          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Dish_Ingredient" Type="Self.Dish_Ingredient" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Dish">
@@ -80,7 +102,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Dish_Ingr_I">
-          <End Role="Ingredient" Type="Self.Ingredient" Multiplicity="1" />
+          <End Role="Ingredient" Type="Self.Ingredient" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Dish_Ingredient" Type="Self.Dish_Ingredient" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Ingredient">
@@ -92,7 +116,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Dish_Tag_D">
-          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Dish_Tag" Type="Self.Dish_Tag" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Dish">
@@ -104,7 +130,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Dish_Tag_T">
-          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+          <End Role="Tag" Type="Self.Tag" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Dish_Tag" Type="Self.Dish_Tag" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tag">
@@ -115,6 +143,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="sp_cat_dishes" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CatID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_categories" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CatID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_dish_by_ingredient" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="IngtID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_dish_detail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DishID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_dish_ingredients" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DishID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_dishes_tags" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DishID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_tot_dishes_by_ingt" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="IngtID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_tot_dishes_per_cat" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CatID" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="RestaurantModelStoreContainer">
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Dish" EntityType="Self.Dish" Schema="dbo" store:Type="Tables" />
@@ -122,6 +174,18 @@
           <EntitySet Name="Dish_Tag" EntityType="Self.Dish_Tag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ingredient" EntityType="Self.Ingredient" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tag" EntityType="Self.Tag" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="vw_dishes_tags" EntityType="Self.vw_dishes_tags" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vw_dishes_tags].[Dish] AS [Dish], 
+    [vw_dishes_tags].[Tags] AS [Tags]
+    FROM [dbo].[vw_dishes_tags] AS [vw_dishes_tags]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vw_tot_ingrt_per_dish" EntityType="Self.vw_tot_ingrt_per_dish" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vw_tot_ingrt_per_dish].[Dish] AS [Dish], 
+    [vw_tot_ingrt_per_dish].[Ingredients Quantity] AS [Ingredients Quantity]
+    FROM [dbo].[vw_tot_ingrt_per_dish] AS [vw_tot_ingrt_per_dish]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK_Dish_Cateogry" Association="Self.FK_Dish_Cateogry">
             <End Role="Category" EntitySet="Category" />
             <End Role="Dish" EntitySet="Dish" />
@@ -147,56 +211,28 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="RestaurantModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="RestaurantContext" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Categories" EntityType="RestaurantModel.Category" />
-          <EntitySet Name="Dishes" EntityType="RestaurantModel.Dish" />
-          <EntitySet Name="Dish_Ingredient" EntityType="RestaurantModel.Dish_Ingredient" />
-          <EntitySet Name="Dish_Tag" EntityType="RestaurantModel.Dish_Tag" />
-          <EntitySet Name="Ingredients" EntityType="RestaurantModel.Ingredient" />
-          <EntitySet Name="Tags" EntityType="RestaurantModel.Tag" />
-          <AssociationSet Name="FK_Dish_Cateogry" Association="RestaurantModel.FK_Dish_Cateogry">
-            <End Role="Category" EntitySet="Categories" />
-            <End Role="Dish" EntitySet="Dishes" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Dish_Ingr_D" Association="RestaurantModel.FK_Dish_Ingr_D">
-            <End Role="Dish" EntitySet="Dishes" />
-            <End Role="Dish_Ingredient" EntitySet="Dish_Ingredient" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Dish_Tag_D" Association="RestaurantModel.FK_Dish_Tag_D">
-            <End Role="Dish" EntitySet="Dishes" />
-            <End Role="Dish_Tag" EntitySet="Dish_Tag" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Dish_Ingr_I" Association="RestaurantModel.FK_Dish_Ingr_I">
-            <End Role="Ingredient" EntitySet="Ingredients" />
-            <End Role="Dish_Ingredient" EntitySet="Dish_Ingredient" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Dish_Tag_T" Association="RestaurantModel.FK_Dish_Tag_T">
-            <End Role="Tag" EntitySet="Tags" />
-            <End Role="Dish_Tag" EntitySet="Dish_Tag" />
-          </AssociationSet>
-        </EntityContainer>
         <EntityType Name="Category">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ImageURL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Dishes" Relationship="RestaurantModel.FK_Dish_Cateogry" FromRole="Category" ToRole="Dish" />
+          <NavigationProperty Name="Dishes" Relationship="Self.FK_Dish_Cateogry" FromRole="Category" ToRole="Dish" />
         </EntityType>
         <EntityType Name="Dish">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Cooking" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="Area" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Cooking" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Area" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ID_Category" Type="Int32" Nullable="false" />
           <Property Name="ImageURL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Category" Relationship="RestaurantModel.FK_Dish_Cateogry" FromRole="Dish" ToRole="Category" />
-          <NavigationProperty Name="Dish_Ingredient" Relationship="RestaurantModel.FK_Dish_Ingr_D" FromRole="Dish" ToRole="Dish_Ingredient" />
-          <NavigationProperty Name="Dish_Tag" Relationship="RestaurantModel.FK_Dish_Tag_D" FromRole="Dish" ToRole="Dish_Tag" />
+          <NavigationProperty Name="Category" Relationship="Self.FK_Dish_Cateogry" FromRole="Dish" ToRole="Category" />
+          <NavigationProperty Name="Dish_Ingredient" Relationship="Self.FK_Dish_Ingr_D" FromRole="Dish" ToRole="Dish_Ingredient" />
+          <NavigationProperty Name="Dish_Tag" Relationship="Self.FK_Dish_Tag_D" FromRole="Dish" ToRole="Dish_Tag" />
         </EntityType>
         <EntityType Name="Dish_Ingredient">
           <Key>
@@ -205,9 +241,9 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ID_Dish" Type="Int32" Nullable="false" />
           <Property Name="ID_Ingredient" Type="Int32" Nullable="false" />
-          <Property Name="Quantity" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Dish" Relationship="RestaurantModel.FK_Dish_Ingr_D" FromRole="Dish_Ingredient" ToRole="Dish" />
-          <NavigationProperty Name="Ingredient" Relationship="RestaurantModel.FK_Dish_Ingr_I" FromRole="Dish_Ingredient" ToRole="Ingredient" />
+          <Property Name="Quantity" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Dish" Relationship="Self.FK_Dish_Ingr_D" FromRole="Dish_Ingredient" ToRole="Dish" />
+          <NavigationProperty Name="Ingredient" Relationship="Self.FK_Dish_Ingr_I" FromRole="Dish_Ingredient" ToRole="Ingredient" />
         </EntityType>
         <EntityType Name="Dish_Tag">
           <Key>
@@ -216,28 +252,42 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ID_Tag" Type="Int32" Nullable="false" />
           <Property Name="ID_Dish" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Dish" Relationship="RestaurantModel.FK_Dish_Tag_D" FromRole="Dish_Tag" ToRole="Dish" />
-          <NavigationProperty Name="Tag" Relationship="RestaurantModel.FK_Dish_Tag_T" FromRole="Dish_Tag" ToRole="Tag" />
+          <NavigationProperty Name="Dish" Relationship="Self.FK_Dish_Tag_D" FromRole="Dish_Tag" ToRole="Dish" />
+          <NavigationProperty Name="Tag" Relationship="Self.FK_Dish_Tag_T" FromRole="Dish_Tag" ToRole="Tag" />
         </EntityType>
         <EntityType Name="Ingredient">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Dish_Ingredient" Relationship="RestaurantModel.FK_Dish_Ingr_I" FromRole="Ingredient" ToRole="Dish_Ingredient" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Dish_Ingredient" Relationship="Self.FK_Dish_Ingr_I" FromRole="Ingredient" ToRole="Dish_Ingredient" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="TagName" Type="String" Nullable="false" MaxLength="20" FixedLength="true" Unicode="false" />
-          <NavigationProperty Name="Dish_Tag" Relationship="RestaurantModel.FK_Dish_Tag_T" FromRole="Tag" ToRole="Dish_Tag" />
+          <Property Name="TagName" Type="String" MaxLength="20" FixedLength="true" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Dish_Tag" Relationship="Self.FK_Dish_Tag_T" FromRole="Tag" ToRole="Dish_Tag" />
+        </EntityType>
+        <EntityType Name="vw_dishes_tags">
+          <Key>
+            <PropertyRef Name="Dish" />
+          </Key>
+          <Property Name="Dish" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Tags" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="vw_tot_ingrt_per_dish">
+          <Key>
+            <PropertyRef Name="Dish" />
+          </Key>
+          <Property Name="Dish" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Ingredients_Quantity" Type="Int32" />
         </EntityType>
         <Association Name="FK_Dish_Cateogry">
-          <End Type="RestaurantModel.Category" Role="Category" Multiplicity="1" />
-          <End Type="RestaurantModel.Dish" Role="Dish" Multiplicity="*" />
+          <End Role="Category" Type="Self.Category" Multiplicity="1" />
+          <End Role="Dish" Type="Self.Dish" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Category">
               <PropertyRef Name="ID" />
@@ -248,8 +298,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Dish_Ingr_D">
-          <End Type="RestaurantModel.Dish" Role="Dish" Multiplicity="1" />
-          <End Type="RestaurantModel.Dish_Ingredient" Role="Dish_Ingredient" Multiplicity="*" />
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="Dish_Ingredient" Type="Self.Dish_Ingredient" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Dish">
               <PropertyRef Name="ID" />
@@ -260,8 +310,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Dish_Tag_D">
-          <End Type="RestaurantModel.Dish" Role="Dish" Multiplicity="1" />
-          <End Type="RestaurantModel.Dish_Tag" Role="Dish_Tag" Multiplicity="*" />
+          <End Role="Dish" Type="Self.Dish" Multiplicity="1" />
+          <End Role="Dish_Tag" Type="Self.Dish_Tag" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Dish">
               <PropertyRef Name="ID" />
@@ -272,8 +322,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Dish_Ingr_I">
-          <End Type="RestaurantModel.Ingredient" Role="Ingredient" Multiplicity="1" />
-          <End Type="RestaurantModel.Dish_Ingredient" Role="Dish_Ingredient" Multiplicity="*" />
+          <End Role="Ingredient" Type="Self.Ingredient" Multiplicity="1" />
+          <End Role="Dish_Ingredient" Type="Self.Dish_Ingredient" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Ingredient">
               <PropertyRef Name="ID" />
@@ -284,8 +334,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Dish_Tag_T">
-          <End Type="RestaurantModel.Tag" Role="Tag" Multiplicity="1" />
-          <End Type="RestaurantModel.Dish_Tag" Role="Dish_Tag" Multiplicity="*" />
+          <End Role="Tag" Type="Self.Tag" Multiplicity="1" />
+          <End Role="Dish_Tag" Type="Self.Dish_Tag" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tag">
               <PropertyRef Name="ID" />
@@ -295,6 +345,99 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="RestaurantContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categories" EntityType="Self.Category" />
+          <EntitySet Name="Dishes" EntityType="Self.Dish" />
+          <EntitySet Name="Dish_Ingredient" EntityType="Self.Dish_Ingredient" />
+          <EntitySet Name="Dish_Tag" EntityType="Self.Dish_Tag" />
+          <EntitySet Name="Ingredients" EntityType="Self.Ingredient" />
+          <EntitySet Name="Tags" EntityType="Self.Tag" />
+          <EntitySet Name="vw_dishes_tags" EntityType="Self.vw_dishes_tags" />
+          <EntitySet Name="vw_tot_ingrt_per_dish" EntityType="Self.vw_tot_ingrt_per_dish" />
+          <AssociationSet Name="FK_Dish_Cateogry" Association="Self.FK_Dish_Cateogry">
+            <End Role="Category" EntitySet="Categories" />
+            <End Role="Dish" EntitySet="Dishes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Dish_Ingr_D" Association="Self.FK_Dish_Ingr_D">
+            <End Role="Dish" EntitySet="Dishes" />
+            <End Role="Dish_Ingredient" EntitySet="Dish_Ingredient" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Dish_Tag_D" Association="Self.FK_Dish_Tag_D">
+            <End Role="Dish" EntitySet="Dishes" />
+            <End Role="Dish_Tag" EntitySet="Dish_Tag" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Dish_Ingr_I" Association="Self.FK_Dish_Ingr_I">
+            <End Role="Ingredient" EntitySet="Ingredients" />
+            <End Role="Dish_Ingredient" EntitySet="Dish_Ingredient" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Dish_Tag_T" Association="Self.FK_Dish_Tag_T">
+            <End Role="Tag" EntitySet="Tags" />
+            <End Role="Dish_Tag" EntitySet="Dish_Tag" />
+          </AssociationSet>
+          <FunctionImport Name="sp_cat_dishes" ReturnType="Collection(RestaurantModel.sp_cat_dishes_Result)">
+          <Parameter Name="CatID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dish_by_ingredient" ReturnType="Collection(RestaurantModel.sp_dish_by_ingredient_Result)">
+          <Parameter Name="IngtID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_categories" ReturnType="Collection(RestaurantModel.sp_categories_Result)">
+          <Parameter Name="CatID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dish_detail" ReturnType="Collection(RestaurantModel.sp_dish_detail_Result)">
+          <Parameter Name="DishID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dish_ingredients" ReturnType="Collection(String)">
+          <Parameter Name="DishID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dishes_tags" ReturnType="Collection(RestaurantModel.sp_dishes_tags_Result)">
+          <Parameter Name="DishID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_tot_dishes_by_ingt" ReturnType="Collection(Int32)">
+          <Parameter Name="IngtID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_tot_dishes_per_cat" ReturnType="Collection(Int32)">
+          <Parameter Name="CatID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DishDetail" EntitySet="Dishes" ReturnType="Collection(RestaurantModel.Dish)">
+          <Parameter Name="DishID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DishCategory" EntitySet="Categories" ReturnType="Collection(RestaurantModel.Category)">
+          <Parameter Name="CatID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DishIngredients" ReturnType="Collection(String)">
+          <Parameter Name="DishID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="DishTags" ReturnType="Collection(String)">
+          <Parameter Name="DishID" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <ComplexType Name="sp_cat_dishes_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="ImageURL" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_dish_by_ingredient_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="ImageURL" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_categories_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" />
+          <Property Type="String" Name="ImageURL" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_dish_detail_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="Cooking" Nullable="false" />
+          <Property Type="String" Name="Area" Nullable="false" MaxLength="50" />
+          <Property Type="Int32" Name="ID_Category" Nullable="false" />
+          <Property Type="String" Name="ImageURL" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_dishes_tags_Result">
+          <Property Type="String" Name="Dish" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="Tags" Nullable="true" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -304,59 +447,129 @@
           <EntitySetMapping Name="Categories">
             <EntityTypeMapping TypeName="RestaurantModel.Category">
               <MappingFragment StoreEntitySet="Category">
-                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Dishes">
             <EntityTypeMapping TypeName="RestaurantModel.Dish">
               <MappingFragment StoreEntitySet="Dish">
-                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
-                <ScalarProperty Name="ID_Category" ColumnName="ID_Category" />
-                <ScalarProperty Name="Area" ColumnName="Area" />
-                <ScalarProperty Name="Cooking" ColumnName="Cooking" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Cooking" ColumnName="Cooking" />
+                <ScalarProperty Name="Area" ColumnName="Area" />
+                <ScalarProperty Name="ID_Category" ColumnName="ID_Category" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Dish_Ingredient">
             <EntityTypeMapping TypeName="RestaurantModel.Dish_Ingredient">
               <MappingFragment StoreEntitySet="Dish_Ingredient">
-                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="ID_Ingredient" ColumnName="ID_Ingredient" />
-                <ScalarProperty Name="ID_Dish" ColumnName="ID_Dish" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ID_Dish" ColumnName="ID_Dish" />
+                <ScalarProperty Name="ID_Ingredient" ColumnName="ID_Ingredient" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Dish_Tag">
             <EntityTypeMapping TypeName="RestaurantModel.Dish_Tag">
               <MappingFragment StoreEntitySet="Dish_Tag">
-                <ScalarProperty Name="ID_Dish" ColumnName="ID_Dish" />
-                <ScalarProperty Name="ID_Tag" ColumnName="ID_Tag" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ID_Tag" ColumnName="ID_Tag" />
+                <ScalarProperty Name="ID_Dish" ColumnName="ID_Dish" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Ingredients">
             <EntityTypeMapping TypeName="RestaurantModel.Ingredient">
               <MappingFragment StoreEntitySet="Ingredient">
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Tags">
             <EntityTypeMapping TypeName="RestaurantModel.Tag">
               <MappingFragment StoreEntitySet="Tag">
-                <ScalarProperty Name="TagName" ColumnName="TagName" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="TagName" ColumnName="TagName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="vw_dishes_tags">
+            <EntityTypeMapping TypeName="RestaurantModel.vw_dishes_tags">
+              <MappingFragment StoreEntitySet="vw_dishes_tags">
+                <ScalarProperty Name="Dish" ColumnName="Dish" />
+                <ScalarProperty Name="Tags" ColumnName="Tags" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="vw_tot_ingrt_per_dish">
+            <EntityTypeMapping TypeName="RestaurantModel.vw_tot_ingrt_per_dish">
+              <MappingFragment StoreEntitySet="vw_tot_ingrt_per_dish">
+                <ScalarProperty Name="Dish" ColumnName="Dish" />
+                <ScalarProperty Name="Ingredients_Quantity" ColumnName="Ingredients Quantity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_cat_dishes" FunctionName="RestaurantModel.Store.sp_cat_dishes">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="RestaurantModel.sp_cat_dishes_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_dish_by_ingredient" FunctionName="RestaurantModel.Store.sp_dish_by_ingredient">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="RestaurantModel.sp_dish_by_ingredient_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_categories" FunctionName="RestaurantModel.Store.sp_categories">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="RestaurantModel.sp_categories_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_dish_detail" FunctionName="RestaurantModel.Store.sp_dish_detail">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="RestaurantModel.sp_dish_detail_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Cooking" ColumnName="Cooking" />
+                <ScalarProperty Name="Area" ColumnName="Area" />
+                <ScalarProperty Name="ID_Category" ColumnName="ID_Category" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_dish_ingredients" FunctionName="RestaurantModel.Store.sp_dish_ingredients" />
+          <FunctionImportMapping FunctionImportName="sp_dishes_tags" FunctionName="RestaurantModel.Store.sp_dishes_tags">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="RestaurantModel.sp_dishes_tags_Result">
+                <ScalarProperty Name="Dish" ColumnName="Dish" />
+                <ScalarProperty Name="Tags" ColumnName="Tags" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_tot_dishes_by_ingt" FunctionName="RestaurantModel.Store.sp_tot_dishes_by_ingt" />
+          <FunctionImportMapping FunctionImportName="sp_tot_dishes_per_cat" FunctionName="RestaurantModel.Store.sp_tot_dishes_per_cat" />
+          <FunctionImportMapping FunctionImportName="DishDetail" FunctionName="RestaurantModel.Store.sp_dish_detail" />
+          <FunctionImportMapping FunctionImportName="DishCategory" FunctionName="RestaurantModel.Store.sp_categories" />
+          <FunctionImportMapping FunctionImportName="DishIngredients" FunctionName="RestaurantModel.Store.sp_dish_ingredients" />
+          <FunctionImportMapping FunctionImportName="DishTags" FunctionName="RestaurantModel.Store.sp_dishes_tags" />
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
