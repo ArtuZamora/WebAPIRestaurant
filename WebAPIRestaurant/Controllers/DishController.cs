@@ -54,8 +54,8 @@ namespace WebAPIRestaurant.Controllers
                 using (var db = new RestaurantContext())
                 {
                     IHttpActionResult result = Content(HttpStatusCode.BadRequest, "Bad Second Parameter. available 1 (Ingredient) and 0 (Category)"); ;
-                    if (opt == 0) result =  Ok(db.sp_cat_dishes(id).ToList()); //By Category
-                    else if (opt == 1) result =  Ok(db.sp_dish_by_ingredient(id).ToList()); //By Ingredient
+                    if (opt == 0) result = Ok(db.sp_cat_dishes(id).ToList()); //By Category
+                    else if (opt == 1) result = Ok(db.sp_dish_by_ingredient(id).ToList()); //By Ingredient
                     return result;
                 }
             }
@@ -73,7 +73,7 @@ namespace WebAPIRestaurant.Controllers
                 {
                     IHttpActionResult result;
                     DishCE d = JsonConvert.DeserializeObject<DishCE>(json.ToString());
-                    if(db.Categories.Find(d.Category.ID) != null)
+                    if (db.Categories.Find(d.Category.ID) != null)
                     {
                         Dish d1 = new Dish();
                         d1.ID = d.ID;
@@ -85,7 +85,7 @@ namespace WebAPIRestaurant.Controllers
                         db.Dishes.Add(d1);
                         foreach (var tag in d.Tags)
                         {
-                            if(db.Tags.FirstOrDefault(t => t.TagName == tag) == default)
+                            if (db.Tags.FirstOrDefault(t => t.TagName == tag) == default)
                             {
                                 Tag tag1 = new Tag();
                                 tag1.TagName = tag;
@@ -103,8 +103,8 @@ namespace WebAPIRestaurant.Controllers
                         }
                         foreach (var ingt in d.Ingredients)
                         {
-                            string ingtQty = ingt.Substring(0, ingt.IndexOf('/'));
-                            string ingtID = ingt.Substring(ingt.IndexOf('/') + 1);
+                            string ingtQty = ingt.Substring(0, ingt.IndexOf('*'));
+                            string ingtID = ingt.Substring(ingt.IndexOf('*') + 1);
                             Dish_Ingredient DI = new Dish_Ingredient();
                             DI.ID_Dish = d1.ID;
                             DI.ID_Ingredient = Convert.ToInt32(ingtID);
@@ -115,7 +115,7 @@ namespace WebAPIRestaurant.Controllers
                         d.ID = d1.ID;
                         result = Ok(d);
                     }
-                    result = Content(HttpStatusCode.Conflict, "Error");
+                    else result = Content(HttpStatusCode.Conflict, "Error");
                     return result;
                 }
             }
@@ -131,11 +131,67 @@ namespace WebAPIRestaurant.Controllers
             {
                 using (var db = new RestaurantContext())
                 {
-                    Dish d = JsonConvert.DeserializeObject<Dish>(json.ToString());
+                    IHttpActionResult result;
+                    DishCE d = JsonConvert.DeserializeObject<DishCE>(json.ToString());
                     Dish d1 = db.Dishes.Find(d.ID);
-
-                    db.SaveChanges();
-                    return Content(HttpStatusCode.OK, "Row Updated");
+                    if (d1 != null)
+                    {
+                        d1.Name = !string.IsNullOrEmpty(d.Name) ? d.Name : d1.Name;
+                        d1.ImageURL = !string.IsNullOrEmpty(d.ImageURL) ? d.ImageURL : d1.ImageURL;
+                        d1.Area = !string.IsNullOrEmpty(d.Area) ? d.Area : d1.Area;
+                        d1.Cooking = !string.IsNullOrEmpty(d.Cooking) ? d.Cooking : d1.Cooking;
+                        d1.ID_Category = !string.IsNullOrEmpty(d.Category.ID.ToString()) ? d.Category.ID : d1.Category.ID;
+                        if (d.Tags.Count() != 0)
+                        {
+                            var dish_Tags = db.Dish_Tag.Where(dt => dt.ID_Dish == d.ID).ToList<Dish_Tag>();
+                            foreach (Dish_Tag item in dish_Tags)
+                            {
+                                db.Dish_Tag.Remove(item);
+                            }
+                            db.SaveChanges();
+                            foreach (var tag in d.Tags)
+                            {
+                                if (db.Tags.FirstOrDefault(t => t.TagName == tag) == default)
+                                {
+                                    Tag tag1 = new Tag();
+                                    tag1.TagName = tag;
+                                    db.Tags.Add(tag1);
+                                }
+                            }
+                            db.SaveChanges();
+                            foreach (var tag in d.Tags)
+                            {
+                                Tag tag1 = db.Tags.First(t => t.TagName == tag);
+                                Dish_Tag dt1 = new Dish_Tag();
+                                dt1.ID_Dish = d1.ID;
+                                dt1.ID_Tag = tag1.ID;
+                                db.Dish_Tag.Add(dt1);
+                            }
+                        }
+                        if (d.Ingredients.Count() != 0)
+                        {
+                            var dish_ingt = db.Dish_Ingredient.Where(dt => dt.ID_Dish == d.ID).ToList<Dish_Ingredient>();
+                            foreach (Dish_Ingredient item in dish_ingt)
+                            {
+                                db.Dish_Ingredient.Remove(item);
+                            }
+                            db.SaveChanges();
+                            foreach (var ingt in d.Ingredients)
+                            {
+                                string ingtQty = ingt.Substring(0, ingt.IndexOf('*'));
+                                string ingtID = ingt.Substring(ingt.IndexOf('*') + 1);
+                                Dish_Ingredient DI = new Dish_Ingredient();
+                                DI.ID_Dish = d1.ID;
+                                DI.ID_Ingredient = Convert.ToInt32(ingtID);
+                                DI.Quantity = ingtQty;
+                                db.Dish_Ingredient.Add(DI);
+                            }
+                        }
+                        db.SaveChanges();
+                        result = Content(HttpStatusCode.OK, "Row updated");
+                    }
+                    else result = Content(HttpStatusCode.NotFound, "Dish not found");
+                    return result;
                 }
             }
             catch (Exception ex)

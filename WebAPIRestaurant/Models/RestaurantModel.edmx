@@ -65,6 +65,22 @@ warning 6002: The table/view 'Restaurant.dbo.vw_dishes_tags' does not have a pri
           <Property Name="Tags" Type="nvarchar(max)" />
         </EntityType>
         <!--Errors Found During Generation:
+warning 6002: The table/view 'Restaurant.dbo.vw_last_created_dishes' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vw_last_created_dishes">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="DishName" />
+            <PropertyRef Name="Area" />
+            <PropertyRef Name="CategoryName" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="DishName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="DishImage" Type="varchar(max)" />
+          <Property Name="Area" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CategoryName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CategoryImage" Type="varchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
 warning 6002: The table/view 'Restaurant.dbo.vw_tot_ingrt_per_dish' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="vw_tot_ingrt_per_dish">
           <Key>
@@ -179,6 +195,16 @@ warning 6002: The table/view 'Restaurant.dbo.vw_tot_ingrt_per_dish' does not hav
     [vw_dishes_tags].[Dish] AS [Dish], 
     [vw_dishes_tags].[Tags] AS [Tags]
     FROM [dbo].[vw_dishes_tags] AS [vw_dishes_tags]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="vw_last_created_dishes" EntityType="Self.vw_last_created_dishes" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [vw_last_created_dishes].[ID] AS [ID], 
+    [vw_last_created_dishes].[DishName] AS [DishName], 
+    [vw_last_created_dishes].[DishImage] AS [DishImage], 
+    [vw_last_created_dishes].[Area] AS [Area], 
+    [vw_last_created_dishes].[CategoryName] AS [CategoryName], 
+    [vw_last_created_dishes].[CategoryImage] AS [CategoryImage]
+    FROM [dbo].[vw_last_created_dishes] AS [vw_last_created_dishes]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vw_tot_ingrt_per_dish" EntityType="Self.vw_tot_ingrt_per_dish" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -410,6 +436,7 @@ warning 6002: The table/view 'Restaurant.dbo.vw_tot_ingrt_per_dish' does not hav
           <FunctionImport Name="DishTags" ReturnType="Collection(String)">
           <Parameter Name="DishID" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="vw_last_created_dishes" EntityType="RestaurantModel.vw_last_created_dishes" />
         </EntityContainer>
         <ComplexType Name="sp_cat_dishes_Result">
           <Property Type="Int32" Name="ID" Nullable="false" />
@@ -438,6 +465,20 @@ warning 6002: The table/view 'Restaurant.dbo.vw_tot_ingrt_per_dish' does not hav
           <Property Type="String" Name="Dish" Nullable="false" MaxLength="100" />
           <Property Type="String" Name="Tags" Nullable="true" />
         </ComplexType>
+        <EntityType Name="vw_last_created_dishes">
+          <Key>
+            <PropertyRef Name="ID" />
+            <PropertyRef Name="DishName" />
+            <PropertyRef Name="Area" />
+            <PropertyRef Name="CategoryName" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="DishName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="DishImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Area" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CategoryName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CategoryImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -570,6 +611,18 @@ warning 6002: The table/view 'Restaurant.dbo.vw_tot_ingrt_per_dish' does not hav
           <FunctionImportMapping FunctionImportName="DishCategory" FunctionName="RestaurantModel.Store.sp_categories" />
           <FunctionImportMapping FunctionImportName="DishIngredients" FunctionName="RestaurantModel.Store.sp_dish_ingredients" />
           <FunctionImportMapping FunctionImportName="DishTags" FunctionName="RestaurantModel.Store.sp_dishes_tags" />
+          <EntitySetMapping Name="vw_last_created_dishes">
+            <EntityTypeMapping TypeName="RestaurantModel.vw_last_created_dishes">
+              <MappingFragment StoreEntitySet="vw_last_created_dishes">
+                <ScalarProperty Name="CategoryImage" ColumnName="CategoryImage" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="Area" ColumnName="Area" />
+                <ScalarProperty Name="DishImage" ColumnName="DishImage" />
+                <ScalarProperty Name="DishName" ColumnName="DishName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

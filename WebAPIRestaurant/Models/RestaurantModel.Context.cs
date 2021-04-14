@@ -35,6 +35,7 @@ namespace WebAPIRestaurant.Models
         public virtual DbSet<Tag> Tags { get; set; }
         public virtual DbSet<vw_dishes_tags> vw_dishes_tags { get; set; }
         public virtual DbSet<vw_tot_ingrt_per_dish> vw_tot_ingrt_per_dish { get; set; }
+        public virtual DbSet<vw_last_created_dishes> vw_last_created_dishes { get; set; }
     
         public virtual ObjectResult<sp_cat_dishes_Result> sp_cat_dishes(Nullable<int> catID)
         {

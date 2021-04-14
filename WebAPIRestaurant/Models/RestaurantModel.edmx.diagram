@@ -5,19 +5,20 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="0272dadd70f1400cbddfec1b8ed80cda" Name="Diagram1">
-        <EntityTypeShape EntityType="RestaurantModel.Category" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="RestaurantModel.Dish" Width="1.5" PointX="3" PointY="3.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="RestaurantModel.Dish_Ingredient" Width="1.5" PointX="5.25" PointY="3.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="RestaurantModel.Category" Width="1.5" PointX="0.5" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RestaurantModel.Dish" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="RestaurantModel.Dish_Ingredient" Width="1.5" PointX="2.75" PointY="3.875" IsExpanded="true" />
         <EntityTypeShape EntityType="RestaurantModel.Dish_Tag" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="RestaurantModel.Ingredient" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
-        <EntityTypeShape EntityType="RestaurantModel.Tag" Width="1.5" PointX="3" PointY="7.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="RestaurantModel.vw_dishes_tags" Width="1.5" PointX="5.75" PointY="7" IsExpanded="true" />
-        <EntityTypeShape EntityType="RestaurantModel.vw_tot_ingrt_per_dish" Width="1.5" PointX="7.75" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="RestaurantModel.Ingredient" Width="1.5" PointX="0.625" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RestaurantModel.Tag" Width="1.5" PointX="5.25" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="RestaurantModel.vw_dishes_tags" Width="1.5" PointX="7.625" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="RestaurantModel.vw_tot_ingrt_per_dish" Width="1.5" PointX="7.625" PointY="0.625" IsExpanded="true" />
         <AssociationConnector Association="RestaurantModel.FK_Dish_Cateogry" ManuallyRouted="false" />
         <AssociationConnector Association="RestaurantModel.FK_Dish_Ingr_D" ManuallyRouted="false" />
         <AssociationConnector Association="RestaurantModel.FK_Dish_Tag_D" ManuallyRouted="false" />
         <AssociationConnector Association="RestaurantModel.FK_Dish_Ingr_I" ManuallyRouted="false" />
         <AssociationConnector Association="RestaurantModel.FK_Dish_Tag_T" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="RestaurantModel.vw_last_created_dishes" Width="1.5" PointX="7.625" PointY="3.625" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
