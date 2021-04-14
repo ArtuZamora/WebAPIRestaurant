@@ -47,6 +47,7 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ImageURL" Type="varchar(max)" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -288,6 +289,7 @@ warning 6002: The table/view 'Restaurant.dbo.vw_tot_ingrt_per_dish' does not hav
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Dish_Ingredient" Relationship="Self.FK_Dish_Ingr_I" FromRole="Ingredient" ToRole="Dish_Ingredient" />
+          <Property Name="ImageURL" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Tag">
           <Key>
@@ -528,6 +530,7 @@ warning 6002: The table/view 'Restaurant.dbo.vw_tot_ingrt_per_dish' does not hav
           <EntitySetMapping Name="Ingredients">
             <EntityTypeMapping TypeName="RestaurantModel.Ingredient">
               <MappingFragment StoreEntitySet="Ingredient">
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>

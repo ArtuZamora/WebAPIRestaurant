@@ -22,6 +22,7 @@ namespace WebAPIRestaurant.Models
     
         public int ID { get; set; }
         public string Name { get; set; }
+        public string ImageURL { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Dish_Ingredient> Dish_Ingredient { get; set; }

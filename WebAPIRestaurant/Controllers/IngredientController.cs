@@ -20,7 +20,7 @@ namespace WebAPIRestaurant.Controllers
                 using (var db = new RestaurantContext())
                 {
                     return Ok(db.Database.SqlQuery<Ingredient>(sql).ToList()
-                        .Select(r => new { r.ID, r.Name }).ToList());
+                        .Select(r => new { r.ID, r.Name, r.ImageURL}).ToList());
                 }
             }
             catch (Exception e)
@@ -60,6 +60,7 @@ namespace WebAPIRestaurant.Controllers
                     Ingredient i = JsonConvert.DeserializeObject<Ingredient>(json.ToString());
                     Ingredient i1 = db.Ingredients.Find(i.ID);
                     i1.Name = !string.IsNullOrEmpty(i.Name) ? i.Name : i1.Name;
+                    i1.ImageURL = !string.IsNullOrEmpty(i.ImageURL) ? i.ImageURL : i1.ImageURL;
                     db.SaveChanges();
                     return Content(HttpStatusCode.OK, "Row Updated");
                 }
